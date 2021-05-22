@@ -1,0 +1,9 @@
+ruta:
+  file: "E:/Proyectos/190520211_unlocked.pdf"
+  salida: "E:/Proyectos/"
+
+page:
+  inicio: 238
+  fin: 241
+  
+listaExp: 714/2021, 48/2021, 699/2020, 617/2013, 551/2021, 111/111, 2/2, 333/3, 1954/2016
