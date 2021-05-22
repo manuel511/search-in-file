@@ -13,8 +13,9 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProcessFile {
+public class ProcessFileService implements IProcessFileService {
 	
+	@Override
 	public String convertPDF(String rutaFile) {
 
 	    PDFParser parser = null;
@@ -48,6 +49,7 @@ public class ProcessFile {
 	    return "";
 	}
 
+	@Override
 	public void saveFile(String path, String text) {
 		try(FileWriter writer = new FileWriter(path)) {
 		    writer.write(text.replace("],", "]\r\n")); 
