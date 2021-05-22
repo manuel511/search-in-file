@@ -36,7 +36,7 @@ public class SearchFilesService {
     private int end;
 	
 	@Autowired
-	private ProcessFile processFile;
+	private IProcessFileService processFile;
 	
 	
 	@EventListener(ApplicationReadyEvent.class)
@@ -78,6 +78,11 @@ public class SearchFilesService {
 						idExp = word[1].replace(".", "");
 						if(listExp.contains(idExp.trim())) {
 							newlistExp.add(idExp);
+							if(!line.substring(line.length() - 2).equals(". ")) {
+								log.info(line);
+								expediente.add(line);
+								line = reader.readLine();
+							}
 						} else {
 							is = false;
 							line = reader.readLine();
@@ -114,11 +119,6 @@ public class SearchFilesService {
 					}
 					listaExpediente.add(expediente.toString().replace(" ,", ""));
 					expediente.clear();
-					if(listaExpediente.size() == 100) {
-						processFile.saveFile(rutaSalida + "expedientes.txt",
-								listaExpediente.toString());
-						return;
-					}
 					
 					line = reader.readLine();
 					is = false;
@@ -134,17 +134,7 @@ public class SearchFilesService {
 			}
 			reader.close();
 			
-			processFile.saveFile(rutaSalida + "expedientes.txt",
-					listaExpediente.toString());
-			
-			LinkedHashSet<String> listNotFound = new LinkedHashSet<>();
-			for(String uniq: listExp) {
-				if(!newlistExp.contains(uniq.trim())) {
-					listNotFound.add(uniq);
-				}
-			}
-			processFile.saveFile(rutaSalida + "expedientes no encontados.txt",
-					listNotFound.toString().replace(",", "\r\n"));
+			saveExp(listaExpediente, newlistExp);
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
@@ -152,6 +142,20 @@ public class SearchFilesService {
 		File fichero = new File(rutaSalida + "dummy.txt");
 		
 		if (!fichero.delete()) log.warn("El fichero dummy no puede ser borrado");
+	}
+	
+	private void saveExp(List<String> listaExpediente, LinkedHashSet<String> newlistExp) {
+		processFile.saveFile(rutaSalida + "expedientes.txt",
+				listaExpediente.toString().replace("SOLO CONSULTA   SOLO CONSULTA   SOLO CONSULTA, ", ""));
+		
+		LinkedHashSet<String> listNotFound = new LinkedHashSet<>();
+		for(String uniq: listExp) {
+			if(!newlistExp.contains(uniq.trim())) {
+				listNotFound.add(uniq);
+			}
+		}
+		processFile.saveFile(rutaSalida + "expedientes no encontados.txt",
+				listNotFound.toString().replace(",", "\r\n"));
 	}
 	
 }
