@@ -72,7 +72,7 @@ public class SearchFilesService {
 				
 				if(is) {
 					isFirst = false;
-					word = word[1].split(" ");
+					word = (word.length == 2 ) ? word[1].split(" ") : word;
 					if(word.length > 1) {
 						
 						idExp = word[1].replace(".", "");
